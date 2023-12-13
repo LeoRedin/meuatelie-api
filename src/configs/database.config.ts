@@ -1,4 +1,5 @@
 import { get } from 'env-var';
+import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import '../libs/utils/dotenv';
 
 // https://github.com/Sairyss/backend-best-practices#configuration
@@ -10,6 +11,6 @@ export const databaseConfig = {
   username: get('DB_USERNAME').required().asString(),
   password: get('DB_PASSWORD').required().asString(),
   database: get('DB_NAME').required().asString(),
-};
+} satisfies TypeOrmModuleOptions;
 
 export const postgresConnectionUri = `postgres://${databaseConfig.username}:${databaseConfig.password}@${databaseConfig.host}/${databaseConfig.database}`;
