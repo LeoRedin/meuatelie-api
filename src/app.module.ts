@@ -7,6 +7,7 @@ import { UserModule } from './modules/user/user.module';
   imports: [
     TypeOrmModule.forRoot({
       ...databaseConfig,
+      autoLoadEntities: true,
     }),
 
     // Modules

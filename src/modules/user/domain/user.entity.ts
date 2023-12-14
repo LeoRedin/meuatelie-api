@@ -1,4 +1,5 @@
 import { Entity as TypeOrmEntity, Column, PrimaryColumn } from 'typeorm';
+import { v4 } from 'uuid';
 import { UserProps, CreateUserProps } from './user.types';
 import { AggregateID, Entity } from '@src/libs/domain';
 
@@ -14,7 +15,7 @@ export class UserEntity extends Entity<UserProps> {
   password: string;
 
   static create(create: CreateUserProps): UserEntity {
-    const id = crypto.randomUUID();
+    const id = v4();
     const props: UserProps = { ...create };
     const user = new UserEntity({ id, props });
 
@@ -22,6 +23,6 @@ export class UserEntity extends Entity<UserProps> {
   }
 
   public validate(): void {
-    throw new Error('UserEntity => validate() => Method not implemented.');
+    console.log('UserEntity => validate() => Method not implemented.');
   }
 }

@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { z } from 'zod';
+import { InjectRepository } from '@nestjs/typeorm';
+import { DeleteResult, InsertResult, Repository } from 'typeorm';
 import { UserRepositoryPort } from './user.repository.port';
-import { Option } from 'oxide.ts';
 import { UserEntity } from '../domain/user.entity';
 
 export const userSchema = z.object({
@@ -16,19 +17,27 @@ export type UserModel = z.TypeOf<typeof userSchema>;
 
 @Injectable()
 export class UserRepository implements UserRepositoryPort {
-  insert(entity: UserEntity | UserEntity[]): Promise<void> {
-    return this.insert(entity);
+  constructor(
+    @InjectRepository(UserEntity)
+    private readonly userEntityRepository: Repository<UserEntity>,
+  ) {}
+  insert(entity: UserEntity | UserEntity[]): Promise<InsertResult> {
+    return this.userEntityRepository.insert(entity);
   }
   findOneByEmail(email: string): Promise<UserEntity | null> {
-    return this.findOneByEmail(email);
+    return this.userEntityRepository.findOne({
+      where: {
+        email,
+      },
+    });
   }
-  findOneById(id: string): Promise<Option<UserEntity>> {
-    return this.findOneById(id);
+  findOneById(id: string): Promise<UserEntity | null> {
+    return this.userEntityRepository.findOneBy({ id });
   }
   findAll(): Promise<UserEntity[]> {
-    return this.findAll();
+    return this.userEntityRepository.find();
   }
-  delete(entity: UserEntity): Promise<boolean> {
-    return this.delete(entity);
+  delete(entity: UserEntity): Promise<DeleteResult> {
+    return this.userEntityRepository.delete({ id: entity.id });
   }
 }
